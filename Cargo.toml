@@ -4,6 +4,4 @@ version = "0.1.0"
 authors = ["Fabian Beckmann <fb@phaseq.de>"]
 
 [dependencies]
-serde = "1.0.80"
 serde_json = "1.0"
-serde_derive = "1.0.80"
