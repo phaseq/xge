@@ -1,3 +1,8 @@
+use std::alloc::System;
+
+#[global_allocator]
+static GLOBAL: System = System;
+
 use std::env;
 use std::io::{self, BufRead};
 use std::net::TcpStream;
