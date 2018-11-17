@@ -18,7 +18,7 @@ print address_string
 #xge_lock.acquire()
 
 xge_client = threading.Thread(target=lambda: 
-	subprocess.call([XGE_LOCATION, address_string])
+	subprocess.call([XGE_LOCATION, "client", address_string])
 	)
 xge_client.start()
 
@@ -31,7 +31,6 @@ print "client connected: {}".format(address)
 #s.connect(("127.0.0.1", 7787))
 for i in range(20):
 	#s.send('a' * (i + 1) + '\n')
-	cs.send('["sometitle","/Users/fabian/Dev/Rust/xge/target/release",'
-		'"/Users/fabian/Dev/Rust/xge/target/release/xge-wrap","{}",'
-		'"/usr/local/bin/python","-c","print \'hi\'"]\n'.format(i))
+	cs.send('["/Users/fabian/Dev/Rust/xge","sometitle","{}",'
+		'"python","-c","print \'hi\'"]\n'.format(i))
 cs.close()
