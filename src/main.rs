@@ -11,22 +11,25 @@ use std::str;
 
 #[macro_use]
 extern crate serde_json;
-use serde_json::Value;
 
 fn accept_commands(stream: TcpStream) {
     let reader = io::BufReader::new(stream);
-    for maybe_cmd in reader.lines() {
-        let cmd_str = maybe_cmd.unwrap();
-        let cmd_json: Value = serde_json::from_str(&cmd_str).unwrap();
-        let cmd_tokens = cmd_json.as_array().unwrap();
+    for cmd_str in reader.lines().map(|l| l.unwrap()) {
+        let local = cmd_str.chars().nth(0) == Some('l');
+        let cmd_tokens: Vec<String> = serde_json::from_str(&cmd_str[1..]).unwrap();
 
         let exe = env::current_exe().unwrap();
-        let cwd = cmd_tokens[0].as_str().unwrap();
-        let title = cmd_tokens[1].as_str().unwrap();
-        let args = cmd_tokens.iter().skip(2).map(|t| t.as_str().unwrap());
+        let cwd = &cmd_tokens[0];
+        let title = &cmd_tokens[1];
+        let args = cmd_tokens.iter().skip(2);
 
-        Command::new(exe)
-            .current_dir(cwd)
+        let mut cmd = Command::new("xgSubmit");
+        cmd.current_dir(cwd).arg(format!("/caption={}", title));
+        if local {
+            cmd.arg("/allowremote=off");
+        }
+        cmd.arg("/command")
+            .arg(exe)
             .arg("w")
             .args(args)
             .spawn()
@@ -57,7 +60,11 @@ fn execute_wrapped(id: &str, exe: &str, args: Vec<&String>) {
             report(id, exit_code, &output_str);
         }
         Err(e) => {
-            report(id, -7787, &format!("XGE-Launcher: failed to execute process: {}", e));
+            report(
+                id,
+                -7787,
+                &format!("XGE-Launcher: failed to execute process: {}", e),
+            );
         }
     }
 }

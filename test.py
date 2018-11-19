@@ -46,7 +46,7 @@ print "client connected: {}".format(address)
 #s.connect(("127.0.0.1", 7787))
 for i in range(20):
 	#s.send('a' * (i + 1) + '\n')
-	cs.send('["/Users/fabian/Dev/Rust/xge","sometitle","{}",'
+	cs.send('["r","/Users/fabian/Dev/Rust/xge","sometitle","{}",'
 		'"python","-c","print \'hi\'"]\n'.format(i))
 cs.close()
 
